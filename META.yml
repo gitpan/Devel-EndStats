@@ -1,0 +1,21 @@
+---
+abstract: 'Show various statistics at the end of program run'
+author:
+  - 'Steven Haryanto <stevenharyanto@gmail.com>'
+build_requires:
+  Module::Build: 0.3601
+configure_requires:
+  Module::Build: 0.3601
+generated_by: 'Dist::Zilla version 2.101230'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Devel-EndStats
+recommends: {}
+requires:
+  perl: 5.010000
+resources:
+  homepage: http://search.cpan.org/dist/Devel-EndStats/
+  repository: http://github.com/sharyanto/perl-Devel-EndStats
+version: 0.02
