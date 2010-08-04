@@ -6,7 +6,7 @@ build_requires:
   Module::Build: 0.3601
 configure_requires:
   Module::Build: 0.3601
-generated_by: 'Dist::Zilla version 2.101230'
+generated_by: 'Dist::Zilla version 2.101241'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -18,4 +18,4 @@ requires:
 resources:
   homepage: http://search.cpan.org/dist/Devel-EndStats/
   repository: http://github.com/sharyanto/perl-Devel-EndStats
-version: 0.02
+version: 0.03

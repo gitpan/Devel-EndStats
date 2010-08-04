@@ -1,6 +1,6 @@
 package Devel::EndStats;
 BEGIN {
-  $Devel::EndStats::VERSION = '0.02';
+  $Devel::EndStats::VERSION = '0.03';
 }
 # ABSTRACT: Show various statistics at the end of program run
 
@@ -21,7 +21,6 @@ sub _mod2incname {
 }
 
 my @my_modules = qw(
-                       Data::Dump
                );
 
 my %excluded_modules;
@@ -64,9 +63,10 @@ INIT {
 }
 
 END {
-    print "# BEGIN stats from Devel::EndStats\n";
+    print STDERR "\n";
+    print STDERR "# BEGIN stats from Devel::EndStats\n";
 
-    printf "# Program runtime duration (s): %d\n", (time() - $^T);
+    print STDERR sprintf "# Program runtime duration (s): %d\n", (time() - $^T);
 
     my $modules = 0;
     my $lines = 0;
@@ -75,18 +75,20 @@ END {
     for my $im (keys %INC) {
         next if $excluded_modules{$im};
         $modules++;
+        $lines{$im} = 0;
+        next unless $INC{$im}; # undefined in some cases
         open F, $INC{$im} or next;
         while (<F>) { $lines++; $lines{$im}++ }
     }
-    printf "# Total number of module files loaded: %d\n", $modules;
-    printf "# Total number of modules lines loaded: %d\n", $lines;
+    print STDERR sprintf "# Total number of module files loaded: %d\n", $modules;
+    print STDERR sprintf "# Total number of modules lines loaded: %d\n", $lines;
     if ($opts{verbose}) {
         for my $im (sort {$lines{$b} <=> $lines{$a}} keys %lines) {
-            printf "#   Lines from %s: %d\n", _inc2modname($im), $lines{$im};
+            print STDERR sprintf "#   Lines from %s: %d\n", _inc2modname($im), $lines{$im};
         }
     }
 
-    print "# END stats\n";
+    print STDERR "# END stats\n";
 }
 
 
@@ -101,7 +103,7 @@ Devel::EndStats - Show various statistics at the end of program run
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
@@ -165,6 +167,16 @@ it's unnecessary.
 Sure, if it's useful. As they say, (comments|patches) are welcome.
 
 =head1 SEE ALSO
+
+=head1 TODO
+
+* Stat: memory usage.
+* Subsecond program duration.
+* Stat: system/user time.
+* Stat: number of open files (sockets).
+* Stat: number of child processes.
+* Stat: number of XS vs PP modules.
+* Feature: remember last run's stats, compare with current run.
 
 =head1 AUTHOR
 

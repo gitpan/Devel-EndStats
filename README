@@ -2,7 +2,7 @@ NAME
     Devel::EndStats - Show various statistics at the end of program run
 
 VERSION
-    version 0.02
+    version 0.03
 
 SYNOPSIS
      # from the command line
@@ -57,6 +57,12 @@ FAQ
     Sure, if it's useful. As they say, (comments|patches) are welcome.
 
 SEE ALSO
+TODO
+    * Stat: memory usage. * Subsecond program duration. * Stat: system/user
+    time. * Stat: number of open files (sockets). * Stat: number of child
+    processes. * Stat: number of XS vs PP modules. * Feature: remember last
+    run's stats, compare with current run.
+
 AUTHOR
       Steven Haryanto <stevenharyanto@gmail.com>
 
