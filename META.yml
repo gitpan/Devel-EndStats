@@ -18,4 +18,4 @@ requires:
 resources:
   homepage: http://search.cpan.org/dist/Devel-EndStats/
   repository: http://github.com/sharyanto/perl-Devel-EndStats
-version: 0.03
+version: 0.04

@@ -1,6 +1,6 @@
 package Devel::EndStats;
 BEGIN {
-  $Devel::EndStats::VERSION = '0.03';
+  $Devel::EndStats::VERSION = '0.04';
 }
 # ABSTRACT: Show various statistics at the end of program run
 
@@ -103,12 +103,36 @@ Devel::EndStats - Show various statistics at the end of program run
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
  # from the command line
  % perl -MDevel::EndStats script.pl
+
+ ##### sample output #####
+ <normal script output, if any...>
+
+ # BEGIN stats from Devel::EndStats
+ # Program runtime duration (s): 2
+ # Total number of module files loaded: 132
+ # Total number of modules lines loaded: 48772
+ # END stats
+
+ ##### sample output (with verbose=1, some cut) #####
+ <normal script output, if any...>
+
+ # BEGIN stats from Devel::EndStats
+ # Program runtime duration (s): 2
+ # Total number of module files loaded: 132
+ # Total number of modules lines loaded: 48772
+ #   Lines from Class::MOP::Class: 1733
+ #   Lines from overload: 1499
+ #   Lines from Moose::Util::TypeConstraints: 1390
+ #   Lines from File::Find: 1349
+ #   Lines from Data::Dumper: 1306
+ ...
+ # END stats
 
 =head1 DESCRIPTION
 
@@ -121,9 +145,11 @@ Some notes/caveats:
 END blocks declared after Devel::EndStats' will be executed after it, so in that
 case it's ideal to load Devel::EndStats as the last module.
 
-In modules statistics, Devel::EndStats excludes itself and the modules it uses.
-Devel::EndStats tries to check whether those modules are actually loaded/used by
-your program instead of just by Devel::EndStats and if so, will not exclude them.
+In modules statistics, unless instructed otherwise, Devel::EndStats excludes
+itself and the modules it uses. Devel::EndStats tries to check whether those
+modules are actually loaded/used by your program instead of just by
+Devel::EndStats and if so, will not exclude them. See C<exclude_endstats_modules>
+in L</OPTIONS> for information on how to not do the excluding.
 
 =head1 OPTIONS
 
@@ -171,11 +197,17 @@ Sure, if it's useful. As they say, (comments|patches) are welcome.
 =head1 TODO
 
 * Stat: memory usage.
+
 * Subsecond program duration.
+
 * Stat: system/user time.
+
 * Stat: number of open files (sockets).
+
 * Stat: number of child processes.
+
 * Stat: number of XS vs PP modules.
+
 * Feature: remember last run's stats, compare with current run.
 
 =head1 AUTHOR

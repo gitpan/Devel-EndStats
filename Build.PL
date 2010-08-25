@@ -16,7 +16,7 @@ my %module_build_args = (
     'Steven Haryanto <stevenharyanto@gmail.com>'
   ],
   'dist_name' => 'Devel-EndStats',
-  'dist_version' => '0.03',
+  'dist_version' => '0.04',
   'license' => 'perl',
   'module_name' => 'Devel::EndStats',
   'recommends' => {},
