@@ -1,10 +1,13 @@
+Build.PL
 Changes
 LICENSE
 MANIFEST
+MANIFEST.SKIP
 META.yml
 README
 dist.ini
 lib/Devel/EndStats.pm
 t/00-compile.t
+t/01-no_files.t-
 t/release-pod-coverage.t
 t/release-pod-syntax.t

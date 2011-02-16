@@ -1,36 +1,41 @@
 package Devel::EndStats;
 BEGIN {
-  $Devel::EndStats::VERSION = '0.04';
+  $Devel::EndStats::VERSION = '0.05';
 }
 # ABSTRACT: Show various statistics at the end of program run
 
 
-use 5.010;
+use strict;
+use warnings;
+use Time::HiRes qw(gettimeofday tv_interval);
 
-sub _inc2modname {
-    local $_ = shift;
-    s!/!::!g;
-    s/\.pm$//;
-    $_;
-}
+my %excluded;
 
-sub _mod2incname {
-    local $_ = shift;
-    s!::!/!g;
-    "$_.pm";
-}
-
-my @my_modules = qw(
-               );
-
-my %excluded_modules;
-
-my %opts = (
-    verbose => 0,
-    exclude_endstats_modules => 1,
+our %opts = (
+    verbose      => 0,
+    _quiet       => 0,
 );
 
 
+sub handler {
+    my ($coderef, $filename) = @_;
+    my $load = 1;
+
+    # XXX intercept lib.pm so we still stay as the first item in @INC
+    if ($filename eq 'lib') {
+        $load = 0;
+        # ...
+    }
+
+    # search and load file, based on rest of @INC
+
+    #print "DEBUG: Loading $filename ...\n";
+    #return (undef, sub {return 0});
+
+    #return (\*FH, );
+}
+
+my @start_time;
 sub import {
     my ($class, %args) = @_;
     $opts{verbose} = $ENV{VERBOSE} if defined($ENV{VERBOSE});
@@ -40,55 +45,83 @@ sub import {
         }
     }
     $opts{$_} = $args{$_} for keys %args;
+    #unshift @INC, \&handler;
+    @start_time = gettimeofday();
 }
 
-INIT {
-    for (qw(feature Devel::EndStats)) {
-        $excluded_modules{ _mod2incname($_) }++
-            if $opts{exclude_endstats_modules};
-    }
+my $begin_success;
+{
+    # shut up warning about too late to run INIT block
+    no warnings;
+    INIT {
+        # exclude modules which we use ourselves
+        for (
+            "strict.pm",
+            "Devel/EndStats.pm",
+            "warnings.pm",
+            "warnings/register.pm",
 
-    # load our modules and exclude it from stats
-    for my $m (@my_modules) {
-        my $im = _mod2incname($m);
-        next if $INC{$im};
-        my %INC0 = %INC;
-        require $im;
-        if ($opts{exclude_endstats_modules}) {
-            for (keys %INC) {
-                $excluded_modules{$_}++ unless $INC0{$_};
+            # from Time::HiRes
+            "AutoLoader.pm",
+            "Config_git.pl",
+            "Config_heavy.pl",
+            "Config.pm",
+            "DynaLoader.pm",
+            "Exporter/Heavy.pm",
+            "Exporter.pm",
+            "Time/HiRes.pm",
+            "vars.pm",
+        ) {
+            $excluded{$_}++;
+        }
+        $begin_success++;
+    }
+}
+
+our $stats;
+END {
+    my $secs = @start_time ? tv_interval(\@start_time) : (time()-$^T);
+
+    $stats  = "\n";
+    $stats .= "# BEGIN stats from Devel::EndStats\n";
+
+    if ($begin_success) {
+
+        $stats .= sprintf "# Program runtime duration: %.3fs\n", $secs;
+
+        my $files = 0;
+        my $lines = 0;
+        my %lines;
+        local *F;
+        for my $r (keys %INC) {
+            next if $excluded{$r};
+            $files++;
+            $lines{$r} = 0;
+            next unless $INC{$r}; # undefined in some cases
+            open F, $INC{$r} or do {
+                warn "Devel::EndStats: Can't open $INC{$r}, skipped\n";
+                next;
+            };
+            while (<F>) { $lines++; $lines{$r}++ }
+        }
+        $stats .= sprintf "# Total number of required files loaded: %d\n",
+            $files;
+        $stats .= sprintf "# Total number of required lines loaded: %d\n",
+            $lines;
+        if ($opts{verbose}) {
+            for my $r (sort {$lines{$b} <=> $lines{$a}} keys %lines) {
+                $stats .= sprintf "#   Lines from %s: %d\n", $r, $lines{$r};
             }
         }
-    }
-}
 
-END {
-    print STDERR "\n";
-    print STDERR "# BEGIN stats from Devel::EndStats\n";
+    } else {
 
-    print STDERR sprintf "# Program runtime duration (s): %d\n", (time() - $^T);
+        $stats .= "# BEGIN phase didn't succeed?\n";
 
-    my $modules = 0;
-    my $lines = 0;
-    my %lines;
-    local *F;
-    for my $im (keys %INC) {
-        next if $excluded_modules{$im};
-        $modules++;
-        $lines{$im} = 0;
-        next unless $INC{$im}; # undefined in some cases
-        open F, $INC{$im} or next;
-        while (<F>) { $lines++; $lines{$im}++ }
-    }
-    print STDERR sprintf "# Total number of module files loaded: %d\n", $modules;
-    print STDERR sprintf "# Total number of modules lines loaded: %d\n", $lines;
-    if ($opts{verbose}) {
-        for my $im (sort {$lines{$b} <=> $lines{$a}} keys %lines) {
-            print STDERR sprintf "#   Lines from %s: %d\n", _inc2modname($im), $lines{$im};
-        }
     }
 
-    print STDERR "# END stats\n";
+    $stats .= "# END stats\n";
+    print STDERR $stats unless $opts{_quiet};
 }
 
 
@@ -103,7 +136,7 @@ Devel::EndStats - Show various statistics at the end of program run
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
@@ -114,49 +147,51 @@ version 0.04
  <normal script output, if any...>
 
  # BEGIN stats from Devel::EndStats
- # Program runtime duration (s): 2
- # Total number of module files loaded: 132
- # Total number of modules lines loaded: 48772
+ # Program runtime duration: 0.055s
+ # Total number of required files loaded: 132
+ # Total number of required lines loaded: 48772
  # END stats
 
  ##### sample output (with verbose=1, some cut) #####
  <normal script output, if any...>
 
  # BEGIN stats from Devel::EndStats
- # Program runtime duration (s): 2
- # Total number of module files loaded: 132
- # Total number of modules lines loaded: 48772
- #   Lines from Class::MOP::Class: 1733
- #   Lines from overload: 1499
- #   Lines from Moose::Util::TypeConstraints: 1390
- #   Lines from File::Find: 1349
- #   Lines from Data::Dumper: 1306
+ # Program runtime duration: 0.055s
+ # Total number of required files loaded: 132
+ # Total number of required lines loaded: 48772
+ #   Lines from Class/MOP/Class.pm: 1733
+ #   Lines from overload.pm: 1499
+ #   Lines from Moose/Util/TypeConstraints.pm: 1390
+ #   Lines from File/Find.pm: 1349
+ #   Lines from Data/Dumper.pm: 1306
  ...
  # END stats
 
 =head1 DESCRIPTION
 
 Devel::EndStats runs in the END block, displaying various statistics about your
-program, such as: how many seconds the program ran, how many module files and
-total number of lines loaded (by inspecting %INC), etc.
+program, such as:
+
+=over 4
+
+=item * how many seconds the program ran;
+
+=item * how many required files and total number of lines loaded (from %INC);
+
+=item * etc.
+
+=back
 
 Some notes/caveats:
 
-END blocks declared after Devel::EndStats' will be executed after it, so in that
-case it's ideal to load Devel::EndStats as the last module.
-
-In modules statistics, unless instructed otherwise, Devel::EndStats excludes
-itself and the modules it uses. Devel::EndStats tries to check whether those
-modules are actually loaded/used by your program instead of just by
-Devel::EndStats and if so, will not exclude them. See C<exclude_endstats_modules>
-in L</OPTIONS> for information on how to not do the excluding.
+Devel::EndStats should be loaded before other modules.
 
 =head1 OPTIONS
 
 Some options are accepted. They can be passed via the B<use> statement:
 
  # from the command line
- % perl -MDevel::EndStats=verbose,1 script.pl
+ % pZerl -MDevel::EndStats=verbose,1 script.pl
 
  # from script
  use Devel::EndStats verbose=>1;
@@ -172,12 +207,9 @@ or via the DEVELENDSTATS_OPTS environment variable:
 Can also be set via VERBOSE environment variable. If set to true, display more
 statistics (like per-module statistics). Default is 0.
 
-=item * exclude_endstats_modules => BOOL
-
-If set to true, exclude Devel::EndStats itself and the modules it uses from the
-statistics. Default is 1.
-
 =back
+
+=for Pod::Coverage handler
 
 =head1 FAQ
 
@@ -198,7 +230,7 @@ Sure, if it's useful. As they say, (comments|patches) are welcome.
 
 * Stat: memory usage.
 
-* Subsecond program duration.
+* Time each require.
 
 * Stat: system/user time.
 
@@ -206,17 +238,19 @@ Sure, if it's useful. As they say, (comments|patches) are welcome.
 
 * Stat: number of child processes.
 
+* Stat: number of actual code lines (vs blanks, data, comment, POD)
+
 * Stat: number of XS vs PP modules.
 
 * Feature: remember last run's stats, compare with current run.
 
 =head1 AUTHOR
 
-  Steven Haryanto <stevenharyanto@gmail.com>
+Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Steven Haryanto.
+This software is copyright (c) 2011 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

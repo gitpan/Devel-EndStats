@@ -2,7 +2,7 @@ NAME
     Devel::EndStats - Show various statistics at the end of program run
 
 VERSION
-    version 0.04
+    version 0.05
 
 SYNOPSIS
      # from the command line
@@ -12,48 +12,46 @@ SYNOPSIS
      <normal script output, if any...>
 
      # BEGIN stats from Devel::EndStats
-     # Program runtime duration (s): 2
-     # Total number of module files loaded: 132
-     # Total number of modules lines loaded: 48772
+     # Program runtime duration: 0.055s
+     # Total number of required files loaded: 132
+     # Total number of required lines loaded: 48772
      # END stats
 
      ##### sample output (with verbose=1, some cut) #####
      <normal script output, if any...>
 
      # BEGIN stats from Devel::EndStats
-     # Program runtime duration (s): 2
-     # Total number of module files loaded: 132
-     # Total number of modules lines loaded: 48772
-     #   Lines from Class::MOP::Class: 1733
-     #   Lines from overload: 1499
-     #   Lines from Moose::Util::TypeConstraints: 1390
-     #   Lines from File::Find: 1349
-     #   Lines from Data::Dumper: 1306
+     # Program runtime duration: 0.055s
+     # Total number of required files loaded: 132
+     # Total number of required lines loaded: 48772
+     #   Lines from Class/MOP/Class.pm: 1733
+     #   Lines from overload.pm: 1499
+     #   Lines from Moose/Util/TypeConstraints.pm: 1390
+     #   Lines from File/Find.pm: 1349
+     #   Lines from Data/Dumper.pm: 1306
      ...
      # END stats
 
 DESCRIPTION
     Devel::EndStats runs in the END block, displaying various statistics
-    about your program, such as: how many seconds the program ran, how many
-    module files and total number of lines loaded (by inspecting %INC), etc.
+    about your program, such as:
+
+    *   how many seconds the program ran;
+
+    *   how many required files and total number of lines loaded (from
+        %INC);
+
+    *   etc.
 
     Some notes/caveats:
 
-    END blocks declared after Devel::EndStats' will be executed after it, so
-    in that case it's ideal to load Devel::EndStats as the last module.
-
-    In modules statistics, unless instructed otherwise, Devel::EndStats
-    excludes itself and the modules it uses. Devel::EndStats tries to check
-    whether those modules are actually loaded/used by your program instead
-    of just by Devel::EndStats and if so, will not exclude them. See
-    "exclude_endstats_modules" in "OPTIONS" for information on how to not do
-    the excluding.
+    Devel::EndStats should be loaded before other modules.
 
 OPTIONS
     Some options are accepted. They can be passed via the use statement:
 
      # from the command line
-     % perl -MDevel::EndStats=verbose,1 script.pl
+     % pZerl -MDevel::EndStats=verbose,1 script.pl
 
      # from script
      use Devel::EndStats verbose=>1;
@@ -66,11 +64,6 @@ OPTIONS
 
         Can also be set via VERBOSE environment variable. If set to true,
         display more statistics (like per-module statistics). Default is 0.
-
-    *   exclude_endstats_modules => BOOL
-
-        If set to true, exclude Devel::EndStats itself and the modules it
-        uses from the statistics. Default is 1.
 
 FAQ
   What is the purpose of this module?
@@ -86,7 +79,7 @@ SEE ALSO
 TODO
     * Stat: memory usage.
 
-    * Subsecond program duration.
+    * Time each require.
 
     * Stat: system/user time.
 
@@ -94,15 +87,17 @@ TODO
 
     * Stat: number of child processes.
 
+    * Stat: number of actual code lines (vs blanks, data, comment, POD)
+
     * Stat: number of XS vs PP modules.
 
     * Feature: remember last run's stats, compare with current run.
 
 AUTHOR
-      Steven Haryanto <stevenharyanto@gmail.com>
+    Steven Haryanto <stevenharyanto@gmail.com>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2010 by Steven Haryanto.
+    This software is copyright (c) 2011 by Steven Haryanto.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.
