@@ -6,26 +6,26 @@ use Module::Build 0.3601;
 
 
 my %module_build_args = (
-  'build_requires' => {
-    'Module::Build' => '0.3601'
+  "build_requires" => {
+    "Module::Build" => "0.3601"
   },
-  'configure_requires' => {
-    'Module::Build' => '0.3601'
+  "configure_requires" => {
+    "Module::Build" => "0.3601"
   },
-  'dist_abstract' => 'Show various statistics at the end of program run',
-  'dist_author' => [
-    'Steven Haryanto <stevenharyanto@gmail.com>'
+  "dist_abstract" => "Show various statistics at the end of program run",
+  "dist_author" => [
+    "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
-  'dist_name' => 'Devel-EndStats',
-  'dist_version' => '0.05',
-  'license' => 'perl',
-  'module_name' => 'Devel::EndStats',
-  'recommends' => {},
-  'recursive_test_files' => 1,
-  'requires' => {
-    'Time::HiRes' => '0'
+  "dist_name" => "Devel-EndStats",
+  "dist_version" => "0.06",
+  "license" => "perl",
+  "module_name" => "Devel::EndStats",
+  "recommends" => {},
+  "recursive_test_files" => 1,
+  "requires" => {
+    "Time::HiRes" => 0
   },
-  'script_files' => []
+  "script_files" => []
 );
 
 
