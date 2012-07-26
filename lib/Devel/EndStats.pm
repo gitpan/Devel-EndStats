@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-our $VERSION = '0.06'; # VERSION
+our $VERSION = '0.07'; # VERSION
 
 my %excluded;
 
@@ -50,6 +50,8 @@ sub import {
     #unshift @INC, \&_inc_handler;
     *CORE::GLOBAL::require = sub {
         my ($arg) = @_;
+        return 0 if $INC{$arg};
+
         $req_level++;
 
         $inc_info{$arg}         ||= {
@@ -194,7 +196,7 @@ Devel::EndStats - Show various statistics at the end of program run
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
