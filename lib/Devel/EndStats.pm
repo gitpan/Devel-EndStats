@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-our $VERSION = '0.07'; # VERSION
+our $VERSION = '0.08'; # VERSION
 
 my %excluded;
 
@@ -125,7 +125,7 @@ END {
 
     if ($begin_success) {
 
-        $stats .= sprintf "# Program runtime duration: %.6fs\n", $secs;
+        $stats .= sprintf "# Program runtime duration: %.3fs\n", $secs;
 
         my $files = 0;
         my $lines = 0;
@@ -165,8 +165,8 @@ END {
             for my $r (sort $sortsub keys %inc_info) {
                 next unless $inc_info{$r}{lines};
                 $inc_info{$r}{time} ||= 0;
-                $stats .= sprintf "#   #%3d  %5d lines  %.6fs(%3d%%)  %s (loaded by %s)\n",
-                     $inc_info{$r}{order}, $inc_info{$r}{lines}, $inc_info{$r}{time}, $secs ? $inc_info{$r}{time}/$secs*100 : 0,
+                $stats .= sprintf "#   #%3d  %5d lines  %7.3fms(%3d%%)  %s (loaded by %s)\n",
+                     $inc_info{$r}{order}, $inc_info{$r}{lines}, $inc_info{$r}{time}*1000, $secs ? $inc_info{$r}{time}/$secs*100 : 0,
                          $r, $inc_info{$r}{caller};
             }
         }
@@ -196,7 +196,7 @@ Devel::EndStats - Show various statistics at the end of program run
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
