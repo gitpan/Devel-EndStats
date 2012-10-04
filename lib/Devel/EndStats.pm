@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-our $VERSION = '0.08'; # VERSION
+our $VERSION = '0.09'; # VERSION
 
 my %excluded;
 
@@ -40,6 +40,9 @@ my $req_level = -1;
 my @req_times;
 sub import {
     my ($class, %args) = @_;
+    warn "There are already a bunch of modules loaded. For better results, ".
+        "it is recommended that you load ".__PACKAGE__." before others.\n"
+            if keys(%INC) >= 5;
     $opts{verbose} = $ENV{VERBOSE} if defined($ENV{VERBOSE});
     if ($ENV{DEVELENDSTATS_OPTS}) {
         while ($ENV{DEVELENDSTATS_OPTS} =~ /(\w+)=(\S+)/g) {
@@ -133,7 +136,7 @@ END {
         for my $r (keys %INC) {
             next if $excluded{$r};
             $files++;
-            next unless $INC{$r}; # undefined in some cases
+            next unless $INC{$r}; # skip modules that failed to be require()-ed
             open F, $INC{$r} or do {
                 warn "Devel::EndStats: Can't open $INC{$r}, skipped\n";
                 next;
@@ -150,24 +153,32 @@ END {
         if ($opts{verbose}) {
             my $s = $opts{sort};
             my $sortsub;
-            if ($s eq 'lines') {
+            my $reverse;
+            if ($s =~ /^(-?)l(?:ines)?/) {
+                $reverse = $1;
                 $sortsub = sub {($inc_info{$b}{$s}||0) <=> ($inc_info{$a}{$s}||0)};
-            } elsif ($s eq 'time') {
+            } elsif ($s =~ /^(-)t(?:ime)?/) {
+                $reverse = $1;
                 $sortsub = sub {$inc_info{$b}{$s} <=> $inc_info{$a}{$s}};
-            } elsif ($s eq 'order') {
+            } elsif ($s =~ /^(-?)o(?:rder)?/) {
+                $reverse = $1;
                 $sortsub = sub {($inc_info{$a}{$s}||0) <=> ($inc_info{$b}{$s}||0)};
-            } elsif ($s eq 'file') {
+            } elsif ($s =~ /^(-?)f(?:ile)?/) {
+                $reverse = $1;
                 $sortsub = sub {$a cmp $b};
             } else {
-                $s = 'caller';
+                # sort by caller;
+                $reverse = $s =~ /-/;
                 $sortsub = sub {$inc_info{$a}{$s} cmp $inc_info{$b}{$s}};
             }
-            for my $r (sort $sortsub keys %inc_info) {
+            my @rr = sort $sortsub keys %inc_info;
+            @rr = reverse @rr if $reverse;
+            for my $r (@rr) {
                 next unless $inc_info{$r}{lines};
                 $inc_info{$r}{time} ||= 0;
                 $stats .= sprintf "#   #%3d  %5d lines  %7.3fms(%3d%%)  %s (loaded by %s)\n",
                      $inc_info{$r}{order}, $inc_info{$r}{lines}, $inc_info{$r}{time}*1000, $secs ? $inc_info{$r}{time}/$secs*100 : 0,
-                         $r, $inc_info{$r}{caller};
+                         $r, ($inc_info{$r}{caller} // "?");
             }
         }
 
@@ -196,7 +207,7 @@ Devel::EndStats - Show various statistics at the end of program run
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 SYNOPSIS
 
@@ -251,7 +262,7 @@ Devel::EndStats should be loaded before other modules.
 Some options are accepted. They can be passed via the B<use> statement:
 
  # from the command line
- % pZerl -MDevel::EndStats=verbose,1 script.pl
+ % perl -MDevel::EndStats=verbose,1 script.pl
 
  # from script
  use Devel::EndStats verbose=>1;

@@ -17,13 +17,13 @@ my %module_build_args = (
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "Devel-EndStats",
-  "dist_version" => "0.08",
+  "dist_version" => "0.09",
   "license" => "perl",
   "module_name" => "Devel::EndStats",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
-    "Time::HiRes" => 0
+    "perl" => "5.007003"
   },
   "script_files" => []
 );

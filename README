@@ -2,7 +2,7 @@ NAME
     Devel::EndStats - Show various statistics at the end of program run
 
 VERSION
-    version 0.08
+    version 0.09
 
 SYNOPSIS
      # from the command line
@@ -51,7 +51,7 @@ OPTIONS
     Some options are accepted. They can be passed via the use statement:
 
      # from the command line
-     % pZerl -MDevel::EndStats=verbose,1 script.pl
+     % perl -MDevel::EndStats=verbose,1 script.pl
 
      # from script
      use Devel::EndStats verbose=>1;
