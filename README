@@ -2,7 +2,7 @@ NAME
     Devel::EndStats - Show various statistics at the end of program run
 
 VERSION
-    version 0.09
+    version 0.10
 
 SYNOPSIS
      # from the command line
