@@ -2,7 +2,7 @@ NAME
     Devel::EndStats - Show various statistics at the end of program run
 
 VERSION
-    version 0.10
+    version 0.11
 
 SYNOPSIS
      # from the command line
@@ -60,17 +60,22 @@ OPTIONS
 
      % DEVELENDSTATS_OPTS='verbose=1' perl -MDevel::EndStats script.pl
 
-    *   verbose => BOOL
+    *   verbose => BOOL (default: 0)
 
         Can also be set via VERBOSE environment variable. If set to true,
-        display more statistics (like per-module statistics). Default is 0.
+        display more statistics (like per-module statistics).
 
-    *   sort => STR (default 'time')
+    *   sort => STR (default: 'time')
 
         Set how to sort the list of loaded modules ('file' = by file, 'time'
         = by load time, 'caller' = by first caller's package, 'order' = by
         order of loading, 'lines' = by number of lines). Only relevant when
         'verbose' is on.
+
+    *   force => BOOL (default: 0)
+
+        By default, if BEGIN phase did not succeed, stats will not be shown.
+        This option forces displaying the stats.
 
 FAQ
   What is the purpose of this module?
