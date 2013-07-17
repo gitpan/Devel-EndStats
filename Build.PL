@@ -12,12 +12,12 @@ my %module_build_args = (
   "configure_requires" => {
     "Module::Build" => "0.3601"
   },
-  "dist_abstract" => "Show various statistics at the end of program run",
+  "dist_abstract" => "Display run time and dependencies after running code",
   "dist_author" => [
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "Devel-EndStats",
-  "dist_version" => "0.11",
+  "dist_version" => "0.12",
   "license" => "perl",
   "module_name" => "Devel::EndStats",
   "recommends" => {},

@@ -1,8 +1,8 @@
 NAME
-    Devel::EndStats - Show various statistics at the end of program run
+    Devel::EndStats - Display run time and dependencies after running code
 
 VERSION
-    version 0.11
+    version 0.12
 
 SYNOPSIS
      # from the command line
@@ -45,7 +45,8 @@ DESCRIPTION
 
     Some notes/caveats:
 
-    Devel::EndStats should be loaded before other modules.
+    Devel::EndStats should be loaded before other modules, for example by
+    running it on the command-line, as shown in the SYNOPSIS.
 
 OPTIONS
     Some options are accepted. They can be passed via the use statement:
@@ -88,6 +89,10 @@ FAQ
     Sure, if it's useful. As they say, (comments|patches) are welcome.
 
 SEE ALSO
+    There are many modules on CPAN that can be used to generate dependency
+    information for your code. Neil Bowers has written a review
+    <http://neilb.org/reviews/dependencies.html> that covers most of them.
+
 TODO
     * Exclusive instead of inclusive timing for each require.
 
@@ -109,7 +114,7 @@ AUTHOR
     Steven Haryanto <stevenharyanto@gmail.com>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2012 by Steven Haryanto.
+    This software is copyright (c) 2013 by Steven Haryanto.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.

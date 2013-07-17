@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-our $VERSION = '0.11'; # VERSION
+our $VERSION = '0.12'; # VERSION
 
 # exclude modules which we use ourselves
 my %excluded = map {$_=>1} (
@@ -198,7 +198,7 @@ END {
 }
 
 1;
-# ABSTRACT: Show various statistics at the end of program run
+# ABSTRACT: Display run time and dependencies after running code
 
 
 1;
@@ -208,11 +208,11 @@ __END__
 
 =head1 NAME
 
-Devel::EndStats - Show various statistics at the end of program run
+Devel::EndStats - Display run time and dependencies after running code
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 
@@ -260,7 +260,9 @@ program, such as:
 
 Some notes/caveats:
 
-Devel::EndStats should be loaded before other modules.
+Devel::EndStats should be loaded before other modules,
+for example by running it on the command-line,
+as shown in the SYNOPSIS.
 
 =head1 OPTIONS
 
@@ -311,6 +313,10 @@ Sure, if it's useful. As they say, (comments|patches) are welcome.
 
 =head1 SEE ALSO
 
+There are many modules on CPAN that can be used to generate dependency
+information for your code. Neil Bowers has written a
+L<review|http://neilb.org/reviews/dependencies.html> that covers most of them.
+
 =head1 TODO
 
 * Exclusive instead of inclusive timing for each require.
@@ -335,7 +341,7 @@ Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Steven Haryanto.
+This software is copyright (c) 2013 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
