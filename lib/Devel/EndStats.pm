@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-our $VERSION = '0.12'; # VERSION
+our $VERSION = '0.13'; # VERSION
 
 # exclude modules which we use ourselves
 my %excluded = map {$_=>1} (
@@ -29,11 +29,23 @@ my %excluded = map {$_=>1} (
     "overload.pm",
 );
 
+# if we use Module::CoreList
+my %excluded_hide_core = map {$_=>1} (
+    "Module/CoreList.pm",
+    "XSLoader.pm",
+    "version.pm",
+    "version/regex.pm",
+    "Module/CoreList/TieHashDelta.pm",
+    "version/vxs.pm",
+);
+
 our %opts = (
     verbose      => 0,
     sort         => 'lines',
     _quiet       => 0,
     force        => 0,
+    hide_core    => 0,
+    hide_noncore => 0,
 );
 
 # not yet
@@ -114,6 +126,11 @@ sub import {
         if (wantarray) { return @$res } else { return $res }
     };
 
+    if ($opts{hide_core} || $opts{hide_noncore}) {
+        require Module::CoreList;
+        $excluded{$_} = 1 for keys %excluded_hide_core;
+    }
+
     $start_time = [gettimeofday];
 }
 
@@ -134,12 +151,18 @@ END {
 
     if ($begin_success || $opts{force}) {
 
+        my $hc = $opts{hide_core} || $opts{hide_noncore};
+
         $stats .= "\n";
         $stats .= "# Start stats from Devel::EndStats:\n";
         $stats .= sprintf "# Program runtime duration: %.3fs\n", $secs;
 
         my $files = 0;
         my $lines = 0;
+        my $files_core    = 0;
+        my $files_noncore = 0;
+        my $lines_core    = 0;
+        my $lines_noncore = 0;
         local *F;
         for my $r (keys %INC) {
             next if $excluded{$r};
@@ -152,11 +175,27 @@ END {
             my $flines = 0;
             while (<F>) { $lines++; $flines++ }
             $inc_info{$r}{lines} = $flines;
+            if ($hc) {
+                my $mod = $r; $mod =~ s/\.pm$//; $mod =~ s!/!::!g;
+                my $is_core = Module::CoreList::is_core($mod);
+                $inc_info{$r}{is_core} = $is_core;
+                if ($is_core) {
+                    $files_core++; $lines_core += $flines;
+                } else {
+                    $files_noncore++; $lines_noncore += $flines;
+                }
+            }
         }
         $stats .= sprintf "# Total number of required files loaded: %d\n",
             $files;
         $stats .= sprintf "# Total number of required lines loaded: %d\n",
             $lines;
+        if ($hc) {
+            $stats .= sprintf "# Total number of required files loaded (core modules): %d\n", $files_core;
+            $stats .= sprintf "# Total number of required lines loaded (core modules): %d\n", $lines_core;
+            $stats .= sprintf "# Total number of required files loaded (non-core modules): %d\n", $files_noncore;
+            $stats .= sprintf "# Total number of required lines loaded (non-core modules): %d\n", $lines_noncore;
+        }
 
         if ($opts{verbose}) {
             my $s = $opts{sort};
@@ -181,12 +220,16 @@ END {
             }
             my @rr = sort $sortsub keys %inc_info;
             @rr = reverse @rr if $reverse;
+            $stats .= "# Seq  Lines  Load Time        Module\n";
             for my $r (@rr) {
-                next unless $inc_info{$r}{lines};
-                $inc_info{$r}{time} ||= 0;
-                $stats .= sprintf "#   #%3s  %5d lines  %7.3fms(%3d%%)  %s (loaded by %s)\n",
-                     $inc_info{$r}{order} || '?', $inc_info{$r}{lines}, $inc_info{$r}{time}*1000, $secs ? $inc_info{$r}{time}/$secs*100 : 0,
-                         $r, ($inc_info{$r}{caller} || "?");
+                my $ii = $inc_info{$r};
+                next unless $ii->{lines};
+                next if $opts{hide_core} && defined($ii->{is_core}) && $ii->{is_core};
+                next if $opts{hide_noncore} && defined($ii->{is_core}) && !$ii->{is_core};
+                $ii->{time} ||= 0;
+                $stats .= sprintf "# %3s  %5d  %7.3fms(%3d%%)  %s (loaded by %s)\n",
+                     $ii->{order} || '?', $ii->{lines}, $ii->{time}*1000, $secs ? $ii->{time}/$secs*100 : 0,
+                         $r, ($ii->{caller} || "?");
             }
         }
 
@@ -204,7 +247,10 @@ END {
 1;
 
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -212,7 +258,7 @@ Devel::EndStats - Display run time and dependencies after running code
 
 =head1 VERSION
 
-version 0.12
+This document describes version 0.13 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-05-09.
 
 =head1 SYNOPSIS
 
@@ -260,9 +306,8 @@ program, such as:
 
 Some notes/caveats:
 
-Devel::EndStats should be loaded before other modules,
-for example by running it on the command-line,
-as shown in the SYNOPSIS.
+Devel::EndStats should be loaded before other modules, for example by running it
+on the command-line, as shown in the SYNOPSIS.
 
 =head1 OPTIONS
 
@@ -295,6 +340,14 @@ time, 'caller' = by first caller's package, 'order' = by order of loading,
 
 By default, if BEGIN phase did not succeed, stats will not be shown. This option
 forces displaying the stats.
+
+=item * hide_core => BOOL (default: 0)
+
+Whether to hide core modules while listing modules in C<verbose> mode.
+
+=item * hide_noncore => BOOL (default: 0)
+
+Whether to hide non-core modules while listing modules in C<verbose> mode.
 
 =back
 
@@ -335,16 +388,31 @@ L<review|http://neilb.org/reviews/dependencies.html> that covers most of them.
 
 * Feature: remember last run's stats, compare with current run.
 
+=head1 HOMEPAGE
+
+Please visit the project's homepage at L<https://metacpan.org/release/Devel-EndStats>.
+
+=head1 SOURCE
+
+Source repository is at L<https://github.com/sharyanto/perl-Devel-EndStats>.
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website L<https://rt.cpan.org/Public/Dist/Display.html?Name=Devel-EndStats>
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
+
 =head1 AUTHOR
 
 Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Steven Haryanto.
+This software is copyright (c) 2014 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

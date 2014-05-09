@@ -2,7 +2,8 @@ NAME
     Devel::EndStats - Display run time and dependencies after running code
 
 VERSION
-    version 0.12
+    This document describes version 0.13 of Devel::EndStats (from Perl
+    distribution Devel-EndStats), released on 2014-05-09.
 
 SYNOPSIS
      # from the command line
@@ -78,6 +79,16 @@ OPTIONS
         By default, if BEGIN phase did not succeed, stats will not be shown.
         This option forces displaying the stats.
 
+    *   hide_core => BOOL (default: 0)
+
+        Whether to hide core modules while listing modules in "verbose"
+        mode.
+
+    *   hide_noncore => BOOL (default: 0)
+
+        Whether to hide non-core modules while listing modules in "verbose"
+        mode.
+
 FAQ
   What is the purpose of this module?
     This module might be useful during development. I first wrote this
@@ -110,11 +121,26 @@ TODO
 
     * Feature: remember last run's stats, compare with current run.
 
+HOMEPAGE
+    Please visit the project's homepage at
+    <https://metacpan.org/release/Devel-EndStats>.
+
+SOURCE
+    Source repository is at
+    <https://github.com/sharyanto/perl-Devel-EndStats>.
+
+BUGS
+    Please report any bugs or feature requests on the bugtracker website
+    <https://rt.cpan.org/Public/Dist/Display.html?Name=Devel-EndStats>
+
+    When submitting a bug or request, please include a test-file or a patch
+    to an existing test-file that illustrates the bug or desired feature.
+
 AUTHOR
     Steven Haryanto <stevenharyanto@gmail.com>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2013 by Steven Haryanto.
+    This software is copyright (c) 2014 by Steven Haryanto.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.
