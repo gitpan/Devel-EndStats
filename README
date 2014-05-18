@@ -2,8 +2,8 @@ NAME
     Devel::EndStats - Display run time and dependencies after running code
 
 VERSION
-    This document describes version 0.13 of Devel::EndStats (from Perl
-    distribution Devel-EndStats), released on 2014-05-09.
+    This document describes version 0.14 of Devel::EndStats (from Perl
+    distribution Devel-EndStats), released on 2014-05-18.
 
 SYNOPSIS
      # from the command line
@@ -89,6 +89,13 @@ OPTIONS
         Whether to hide non-core modules while listing modules in "verbose"
         mode.
 
+    *   show_memsize => BOOL (default: 0)
+
+        Whether to show memory usage information. Currently this is done by
+        probing "/proc/$$/statm" because some other memory querying modules
+        are unusable (e.g. Devel::SizeMe currently segfaults on my system,
+        "Devel::InterpreterSize" is too heavy).
+
 FAQ
   What is the purpose of this module?
     This module might be useful during development. I first wrote this
@@ -104,11 +111,10 @@ SEE ALSO
     information for your code. Neil Bowers has written a review
     <http://neilb.org/reviews/dependencies.html> that covers most of them.
 
+KNOWN ISSUES
+    * Timing and memory usage is inclusive instead of exclusive.
+
 TODO
-    * Exclusive instead of inclusive timing for each require.
-
-    * Stat: memory usage.
-
     * Stat: system/user time.
 
     * Stat: number of open files (sockets).

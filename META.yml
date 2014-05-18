@@ -23,7 +23,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Devel-EndStats
   homepage: https://metacpan.org/release/Devel-EndStats
   repository: git://github.com/sharyanto/perl-Devel-EndStats.git
-version: '0.13'
+version: '0.14'
 x_Dist_Zilla:
   perl:
     version: '5.018001'
