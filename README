@@ -2,8 +2,8 @@ NAME
     Devel::EndStats - Display run time and dependencies after running code
 
 VERSION
-    This document describes version 0.14 of Devel::EndStats (from Perl
-    distribution Devel-EndStats), released on 2014-05-18.
+    This document describes version 0.15 of Devel::EndStats (from Perl
+    distribution Devel-EndStats), released on 2014-08-21.
 
 SYNOPSIS
      # from the command line
@@ -67,7 +67,7 @@ OPTIONS
         Can also be set via VERBOSE environment variable. If set to true,
         display more statistics (like per-module statistics).
 
-    *   sort => STR (default: 'time')
+    *   sort => STR (default: '-time')
 
         Set how to sort the list of loaded modules ('file' = by file, 'time'
         = by load time, 'caller' = by first caller's package, 'order' = by

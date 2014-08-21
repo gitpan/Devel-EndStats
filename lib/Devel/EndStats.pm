@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-our $VERSION = '0.14'; # VERSION
+our $VERSION = '0.15'; # VERSION
 
 # exclude modules which we use ourselves
 my %excluded = map {$_=>1} (
@@ -41,7 +41,7 @@ my %excluded_hide_core = map {$_=>1} (
 
 our %opts = (
     verbose      => 0,
-    sort         => 'lines',
+    sort         => '-time',
     _quiet       => 0,
     force        => 0,
     hide_core    => 0,
@@ -112,7 +112,7 @@ sub import {
     #unshift @INC, \&_inc_handler;
     *CORE::GLOBAL::require = sub {
         my ($arg) = @_;
-        return 0 if $INC{$arg};
+        return 1 if $INC{$arg};
 
         $req_level++;
 
@@ -224,7 +224,7 @@ END {
                 $sortsub = sub {($inc_info{$a}{lines}||0) <=> ($inc_info{$b}{lines}||0)};
             } elsif ($s =~ /^(-)t(?:ime)?/) {
                 $reverse = $1;
-                $sortsub = sub {$inc_info{$b}{time} <=> $inc_info{$b}{time}};
+                $sortsub = sub {($inc_info{$a}{time}||0) <=> ($inc_info{$b}{time}||0)};
             } elsif ($s =~ /^(-?)o(?:rder)?/) {
                 $reverse = $1;
                 $sortsub = sub {($inc_info{$a}{seq}||0) <=> ($inc_info{$b}{seq}||0)};
@@ -286,7 +286,7 @@ Devel::EndStats - Display run time and dependencies after running code
 
 =head1 VERSION
 
-This document describes version 0.14 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-05-18.
+This document describes version 0.15 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-08-21.
 
 =head1 SYNOPSIS
 
@@ -358,7 +358,7 @@ or via the DEVELENDSTATS_OPTS environment variable:
 Can also be set via VERBOSE environment variable. If set to true, display more
 statistics (like per-module statistics).
 
-=item * sort => STR (default: 'time')
+=item * sort => STR (default: '-time')
 
 Set how to sort the list of loaded modules ('file' = by file, 'time' = by load
 time, 'caller' = by first caller's package, 'order' = by order of loading,
