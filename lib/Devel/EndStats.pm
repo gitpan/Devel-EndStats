@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-our $VERSION = '0.15'; # VERSION
+our $VERSION = '0.16'; # VERSION
 
 # exclude modules which we use ourselves
 my %excluded = map {$_=>1} (
@@ -186,6 +186,7 @@ END {
             next if $excluded{$r};
             $files++;
             next unless $INC{$r}; # skip modules that failed to be require()-ed
+            next if $INC{$r} eq '-e';
             open F, $INC{$r} or do {
                 warn "Devel::EndStats: Can't open $INC{$r}, skipped\n";
                 next;
@@ -286,7 +287,7 @@ Devel::EndStats - Display run time and dependencies after running code
 
 =head1 VERSION
 
-This document describes version 0.15 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-08-21.
+This document describes version 0.16 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-11-09.
 
 =head1 SYNOPSIS
 
@@ -441,11 +442,11 @@ feature.
 
 =head1 AUTHOR
 
-Steven Haryanto <stevenharyanto@gmail.com>
+perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by Steven Haryanto.
+This software is copyright (c) 2014 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
