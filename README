@@ -2,7 +2,7 @@ NAME
     Devel::EndStats - Display run time and dependencies after running code
 
 VERSION
-    This document describes version 0.16 of Devel::EndStats (from Perl
+    This document describes version 0.17 of Devel::EndStats (from Perl
     distribution Devel-EndStats), released on 2014-11-09.
 
 SYNOPSIS

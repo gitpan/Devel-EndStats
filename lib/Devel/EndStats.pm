@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-our $VERSION = '0.16'; # VERSION
+our $VERSION = '0.17'; # VERSION
 
 # exclude modules which we use ourselves
 my %excluded = map {$_=>1} (
@@ -223,7 +223,7 @@ END {
             if ($s =~ /^(-?)l(?:ines)?/) {
                 $reverse = $1;
                 $sortsub = sub {($inc_info{$a}{lines}||0) <=> ($inc_info{$b}{lines}||0)};
-            } elsif ($s =~ /^(-)t(?:ime)?/) {
+            } elsif ($s =~ /^(-?)t(?:ime)?/) {
                 $reverse = $1;
                 $sortsub = sub {($inc_info{$a}{time}||0) <=> ($inc_info{$b}{time}||0)};
             } elsif ($s =~ /^(-?)o(?:rder)?/) {
@@ -287,7 +287,7 @@ Devel::EndStats - Display run time and dependencies after running code
 
 =head1 VERSION
 
-This document describes version 0.16 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-11-09.
+This document describes version 0.17 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-11-09.
 
 =head1 SYNOPSIS
 

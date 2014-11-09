@@ -54,7 +54,7 @@
          "web" : "https://github.com/sharyanto/perl-Devel-EndStats"
       }
    },
-   "version" : "0.16",
+   "version" : "0.17",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
