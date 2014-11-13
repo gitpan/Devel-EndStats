@@ -1,10 +1,11 @@
 package Devel::EndStats;
 
+our $DATE = '2014-11-13'; # DATE
+our $VERSION = '0.18'; # VERSION
+
 use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
-
-our $VERSION = '0.17'; # VERSION
 
 # exclude modules which we use ourselves
 my %excluded = map {$_=>1} (
@@ -217,7 +218,7 @@ END {
         }
 
         if ($opts{verbose}) {
-            my $s = $opts{sort} // 'caller';
+            my $s = $opts{sort} || 'caller';
             my $sortsub;
             my $reverse;
             if ($s =~ /^(-?)l(?:ines)?/) {
@@ -287,7 +288,7 @@ Devel::EndStats - Display run time and dependencies after running code
 
 =head1 VERSION
 
-This document describes version 0.17 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-11-09.
+This document describes version 0.18 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-11-13.
 
 =head1 SYNOPSIS
 
@@ -430,7 +431,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/Devel-EndS
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/sharyanto/perl-Devel-EndStats>.
+Source repository is at L<https://github.com/perlancar/perl-Devel-EndStats>.
 
 =head1 BUGS
 

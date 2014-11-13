@@ -2,8 +2,8 @@ NAME
     Devel::EndStats - Display run time and dependencies after running code
 
 VERSION
-    This document describes version 0.17 of Devel::EndStats (from Perl
-    distribution Devel-EndStats), released on 2014-11-09.
+    This document describes version 0.18 of Devel::EndStats (from Perl
+    distribution Devel-EndStats), released on 2014-11-13.
 
 SYNOPSIS
      # from the command line
@@ -133,7 +133,7 @@ HOMEPAGE
 
 SOURCE
     Source repository is at
-    <https://github.com/sharyanto/perl-Devel-EndStats>.
+    <https://github.com/perlancar/perl-Devel-EndStats>.
 
 BUGS
     Please report any bugs or feature requests on the bugtracker website
