@@ -1,26 +1,20 @@
-NAME
-    Devel::EndStats - Display run time and dependencies after running code
-
-VERSION
-    This document describes version 0.18 of Devel::EndStats (from Perl
-    distribution Devel-EndStats), released on 2014-11-13.
-
 SYNOPSIS
+
      # from the command line
      % perl -MDevel::EndStats script.pl
-
+    
      ##### sample output #####
      <normal script output, if any...>
-
+    
      # BEGIN stats from Devel::EndStats
      # Program runtime duration: 0.055s
      # Total number of required files loaded: 132
      # Total number of required lines loaded: 48772
      # END stats
-
+    
      ##### sample output (with verbose=1, some cut) #####
      <normal script output, if any...>
-
+    
      # BEGIN stats from Devel::EndStats
      # Program runtime duration: 0.055s
      # Total number of required files loaded: 132
@@ -34,15 +28,16 @@ SYNOPSIS
      # END stats
 
 DESCRIPTION
+
     Devel::EndStats runs in the END block, displaying various statistics
     about your program, such as:
 
-    *   how many seconds the program ran;
+      * how many seconds the program ran;
 
-    *   how many required files and total number of lines loaded (from
-        %INC);
+      * how many required files and total number of lines loaded (from
+      %INC);
 
-    *   etc.
+      * etc.
 
     Some notes/caveats:
 
@@ -50,11 +45,12 @@ DESCRIPTION
     running it on the command-line, as shown in the SYNOPSIS.
 
 OPTIONS
+
     Some options are accepted. They can be passed via the use statement:
 
      # from the command line
      % perl -MDevel::EndStats=verbose,1 script.pl
-
+    
      # from script
      use Devel::EndStats verbose=>1;
 
@@ -62,92 +58,59 @@ OPTIONS
 
      % DEVELENDSTATS_OPTS='verbose=1' perl -MDevel::EndStats script.pl
 
-    *   verbose => BOOL (default: 0)
+      * verbose => BOOL (default: 0)
 
-        Can also be set via VERBOSE environment variable. If set to true,
-        display more statistics (like per-module statistics).
+      Can also be set via VERBOSE environment variable. If set to true,
+      display more statistics (like per-module statistics).
 
-    *   sort => STR (default: '-time')
+      * sort => STR (default: '-time')
 
-        Set how to sort the list of loaded modules ('file' = by file, 'time'
-        = by load time, 'caller' = by first caller's package, 'order' = by
-        order of loading, 'lines' = by number of lines). Only relevant when
-        'verbose' is on.
+      Set how to sort the list of loaded modules ('file' = by file, 'time'
+      = by load time, 'caller' = by first caller's package, 'order' = by
+      order of loading, 'lines' = by number of lines). Only relevant when
+      'verbose' is on.
 
-    *   force => BOOL (default: 0)
+      * force => BOOL (default: 0)
 
-        By default, if BEGIN phase did not succeed, stats will not be shown.
-        This option forces displaying the stats.
+      By default, if BEGIN phase did not succeed, stats will not be shown.
+      This option forces displaying the stats.
 
-    *   hide_core => BOOL (default: 0)
+      * hide_core => BOOL (default: 0)
 
-        Whether to hide core modules while listing modules in "verbose"
-        mode.
+      Whether to hide core modules while listing modules in verbose mode.
 
-    *   hide_noncore => BOOL (default: 0)
+      * hide_noncore => BOOL (default: 0)
 
-        Whether to hide non-core modules while listing modules in "verbose"
-        mode.
+      Whether to hide non-core modules while listing modules in verbose
+      mode.
 
-    *   show_memsize => BOOL (default: 0)
+      * show_memsize => BOOL (default: 0)
 
-        Whether to show memory usage information. Currently this is done by
-        probing "/proc/$$/statm" because some other memory querying modules
-        are unusable (e.g. Devel::SizeMe currently segfaults on my system,
-        "Devel::InterpreterSize" is too heavy).
+      Whether to show memory usage information. Currently this is done by
+      probing /proc/$$/statm because some other memory querying modules are
+      unusable (e.g. Devel::SizeMe currently segfaults on my system,
+      Devel::InterpreterSize is too heavy).
 
 FAQ
-  What is the purpose of this module?
+
+ What is the purpose of this module?
+
     This module might be useful during development. I first wrote this
     module when trying to reduce startup overhead of a command line
     application, by looking at how many modules the app has loaded and try
     to avoid loading modules whenever it's unnecessary.
 
-  Can you add (so and so) information to the stats?
+ Can you add (so and so) information to the stats?
+
     Sure, if it's useful. As they say, (comments|patches) are welcome.
 
 SEE ALSO
+
     There are many modules on CPAN that can be used to generate dependency
     information for your code. Neil Bowers has written a review
     <http://neilb.org/reviews/dependencies.html> that covers most of them.
 
 KNOWN ISSUES
+
     * Timing and memory usage is inclusive instead of exclusive.
-
-TODO
-    * Stat: system/user time.
-
-    * Stat: number of open files (sockets).
-
-    * Stat: number of child processes.
-
-    * Stat: number of actual code lines (vs blanks, data, comment, POD)
-
-    * Stat: number of XS vs PP modules.
-
-    * Feature: remember last run's stats, compare with current run.
-
-HOMEPAGE
-    Please visit the project's homepage at
-    <https://metacpan.org/release/Devel-EndStats>.
-
-SOURCE
-    Source repository is at
-    <https://github.com/perlancar/perl-Devel-EndStats>.
-
-BUGS
-    Please report any bugs or feature requests on the bugtracker website
-    <https://rt.cpan.org/Public/Dist/Display.html?Name=Devel-EndStats>
-
-    When submitting a bug or request, please include a test-file or a patch
-    to an existing test-file that illustrates the bug or desired feature.
-
-AUTHOR
-    perlancar <perlancar@cpan.org>
-
-COPYRIGHT AND LICENSE
-    This software is copyright (c) 2014 by perlancar@cpan.org.
-
-    This is free software; you can redistribute it and/or modify it under
-    the same terms as the Perl 5 programming language system itself.
 

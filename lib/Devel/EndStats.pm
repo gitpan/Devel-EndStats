@@ -1,7 +1,7 @@
 package Devel::EndStats;
 
-our $DATE = '2014-11-13'; # DATE
-our $VERSION = '0.18'; # VERSION
+our $DATE = '2015-01-03'; # DATE
+our $VERSION = '0.19'; # VERSION
 
 use strict;
 use warnings;
@@ -273,9 +273,6 @@ END {
 1;
 # ABSTRACT: Display run time and dependencies after running code
 
-
-1;
-
 __END__
 
 =pod
@@ -288,7 +285,7 @@ Devel::EndStats - Display run time and dependencies after running code
 
 =head1 VERSION
 
-This document describes version 0.18 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2014-11-13.
+This document describes version 0.19 of Devel::EndStats (from Perl distribution Devel-EndStats), released on 2015-01-03.
 
 =head1 SYNOPSIS
 
@@ -411,27 +408,13 @@ L<review|http://neilb.org/reviews/dependencies.html> that covers most of them.
 
 * Timing and memory usage is inclusive instead of exclusive.
 
-=head1 TODO
-
-* Stat: system/user time.
-
-* Stat: number of open files (sockets).
-
-* Stat: number of child processes.
-
-* Stat: number of actual code lines (vs blanks, data, comment, POD)
-
-* Stat: number of XS vs PP modules.
-
-* Feature: remember last run's stats, compare with current run.
-
 =head1 HOMEPAGE
 
 Please visit the project's homepage at L<https://metacpan.org/release/Devel-EndStats>.
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-Devel-EndStats>.
+Source repository is at L<https://github.com/sharyanto/perl-Devel-EndStats>.
 
 =head1 BUGS
 
@@ -447,7 +430,7 @@ perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by perlancar@cpan.org.
+This software is copyright (c) 2015 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
